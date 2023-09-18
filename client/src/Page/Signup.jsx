@@ -5,7 +5,8 @@ import axios from "axios";
 
 const initialState = {
   name:"" , email: "",
-  password: "", gender:""
+  password: "", gender:"",
+  ipaddress:"",
 };
 
 function Signup() {
