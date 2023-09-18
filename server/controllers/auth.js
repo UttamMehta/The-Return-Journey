@@ -5,14 +5,12 @@ const axios = require("axios");
 const brcypt = require("bcryptjs");
 
 function generateToken(user) {
-  const { _id, name, email, image } = user;
+  const { _id,phoneno,ipaddress} = user;
 
   return jwt.sign(
     {
       _id,
-      name,
-      email,
-      image,
+      phoneno,ipaddress,
     },
     config.JWT_SECRET_KEY
   );

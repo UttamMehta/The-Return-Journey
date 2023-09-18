@@ -16,8 +16,7 @@ app.use(morgan("tiny"));
 
 app.get("/hello", (req, res, next) => {
   res.send("Hello there");
-
-  next();
+  // next();
 });
 
 app.use("/users", authRouter);
