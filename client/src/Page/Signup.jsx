@@ -20,7 +20,7 @@ function Signup() {
   const handleSubmit = async(e) => {
 
     if(!formData.showotp){
-  let res=await axios.post("http://localhost:3035/users/register", formData).
+  let res=await axios.post("http://localhost:3035/users/generateOtp", formData).
   then((res)=>{console.log(res.message);
     setFormData((prev)=>({...prev,showotp:true}));
   return res.message;
@@ -29,10 +29,18 @@ function Signup() {
     return err;}
     );
   }
-  
+
   else{
-    console.log("sfg");
-  }
+    let res=await axios.post("http://localhost:3035/users/register", formData).
+    then((res)=>{console.log(res.message);
+     
+    return res.message;
+    })
+      .catch((err) =>{console.log(err)
+      return err;}
+      );
+    }
+
 }
 
   return (
