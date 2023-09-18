@@ -7,8 +7,6 @@ const path = require("path");
 
 const connectDatabase = require("./database/connectDatabase");
 const authRouter = require("./routes/auth");
-const postRouter = require("./routes/post");
-// const commentRouter = require("./routes/comment");
 
 const app = express();
 
@@ -23,9 +21,6 @@ app.get("/hello", (req, res, next) => {
 });
 
 app.use("/users", authRouter);
-app.use("/posts", postRouter);
-
-// app.use('/api/comment', commentRouter);
 
 app.use("/", express.static("static"));
 
