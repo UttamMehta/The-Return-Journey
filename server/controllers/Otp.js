@@ -3,31 +3,31 @@ const { all } = require("../routes/auth");
 const twilio = require('twilio');
 const config = require("../config/config");
 
-async function createPost(req, res) {
-  try {
-    const user = req.user;
+// async function createPost(req, res) {
+//   try {
+//     const user = req.user;
 
-    const { title, content, device } = req.body;
+//     const { title, content, device } = req.body;
 
-    const post = await Post.create({
-      title,
-      content,
-      device,
-      author: {
-        userId: user._id,
-        name: user.name,
-      },
-    });
+//     const post = await Post.create({
+//       title,
+//       content,
+//       device,
+//       author: {
+//         userId: user._id,
+//         name: user.name,
+//       },
+//     });
 
-    return res.send({
-      data: post,
-    });
-  } catch (err) {
-    return res.status(500).send({
-      error: "Something went wrong",
-    });
-  }
-}
+//     return res.send({
+//       data: post,
+//     });
+//   } catch (err) {
+//     return res.status(500).send({
+//       error: "Something went wrong",
+//     });
+//   }
+// }
 
 // async function getBlogs(req, res) {
 //   try {
@@ -104,26 +104,26 @@ const client = twilio(config.TWILIO_ACCOUNT_SID,config.TWILIO_AUTH_TOKEN);
 
 // Function to send OTP via SMS
 function sendOTP(phoneNumber, otp) {
-  return client.messages.create({
-    to: phoneNumber,
-    from: process.env.PHONE_NO,
-    body: `Your OTP: ${otp}`,
-  });
+  // return client.messages.create({
+  //   to: phoneNumber,
+  //   from: process.env.PHONE_NO,
+  //   body: `Your OTP: ${otp}`,
+  // });
 }
 
 // Example usage
-const userPhoneNumber = '+1234567890'; // Replace with the user's phone number
+const userPhoneNumber = '8338853833'; // Replace with the user's phone number
 const otp = '123456'; // Replace with a randomly generated OTP
-sendOTP(userPhoneNumber, otp)
-  .then((message) => {
-    console.log('OTP sent successfully:', message.sid);
-  })
-  .catch((error) => {
-    console.error('Error sending OTP:', error);
-  });
+// sendOTP(userPhoneNumber, otp)
+//   .then((message) => {
+//     console.log('OTP sent successfully:', message.sid);
+//   })
+//   .catch((error) => {
+//     console.error('Error sending OTP:', error);
+//   });
 
 
 
-module.exports = {
-  createPost
-};
+// module.exports = {
+//   createPost
+// };
