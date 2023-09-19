@@ -1,6 +1,7 @@
 const { Post } = require("../database/Post");
 const { all } = require("../routes/auth");
 const twilio = require('twilio');
+const config = require("../config/config");
 
 async function createPost(req, res) {
   try {
@@ -99,13 +100,13 @@ async function createPost(req, res) {
 
 
 // Initialize Twilio client
-const client = twilio('YOUR_ACCOUNT_SID', 'YOUR_AUTH_TOKEN');
+const client = twilio(config.TWILIO_ACCOUNT_SID,config.TWILIO_AUTH_TOKEN);
 
 // Function to send OTP via SMS
 function sendOTP(phoneNumber, otp) {
   return client.messages.create({
     to: phoneNumber,
-    from: 'YOUR_TWILIO_PHONE_NUMBER',
+    from: process.env.PHONE_NO,
     body: `Your OTP: ${otp}`,
   });
 }
