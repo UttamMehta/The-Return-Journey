@@ -100,27 +100,27 @@ const config = require("../config/config");
 
 
 // Initialize Twilio client
-const client = twilio(config.TWILIO_ACCOUNT_SID,config.TWILIO_AUTH_TOKEN);
+const client = twilio("ACfb18525c5c98a8ea54f8da57b170b4a0","17a80806ccddd2363bb96bef3daf08c0");
 
 // Function to send OTP via SMS
 function sendOTP(phoneNumber, otp) {
-  // return client.messages.create({
-  //   to: phoneNumber,
-  //   from: process.env.PHONE_NO,
-  //   body: `Your OTP: ${otp}`,
-  // });
+  return client.messages.create({
+    to: phoneNumber,
+    from:6370457871,
+    body: `Your OTP: ${otp}`,
+  });
 }
 
 // Example usage
 const userPhoneNumber = '8338853833'; // Replace with the user's phone number
 const otp = '123456'; // Replace with a randomly generated OTP
-// sendOTP(userPhoneNumber, otp)
-//   .then((message) => {
-//     console.log('OTP sent successfully:', message.sid);
-//   })
-//   .catch((error) => {
-//     console.error('Error sending OTP:', error);
-//   });
+sendOTP(userPhoneNumber, otp)
+  .then((message) => {
+    console.log('OTP sent successfully:', message);
+  })
+  .catch((error) => {
+    console.error('Error sending OTP:', error);
+  });
 
 
 
