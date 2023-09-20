@@ -4,13 +4,13 @@ const verifySid = "VA2898d7098064df8634fe5294e3b8164c";
 const client = require("twilio")(accountSid, authToken);
 
 
-const enteredOTP = "189542"; 
+const enteredOTP = "557347"; 
 
 client.verify.v2
   .services(verifySid)
   .verificationChecks.create({ to: "+919437939830", code: enteredOTP })
-  .then((verification_check) => {
-    console.log(verification_check.status);
+  .then((verification) => {
+    console.log(verification);
     // Check the verification_check.status to determine if the OTP is valid
   })
   .catch((error) => {
