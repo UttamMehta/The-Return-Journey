@@ -1,9 +1,10 @@
+const ipinfo = require('ipinfo');
 
 async function checkipaddress(req, res, next) {
     try {
         const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
         const ipDetails = await ipinfo(ip);
-    
+
         if (ipDetails.ip) {
         next();
         }
@@ -16,8 +17,6 @@ async function checkipaddress(req, res, next) {
         res.status(500).send('Internal server error');
       }
   }
-  
-  
   
   
   module.exports = checkipaddress;

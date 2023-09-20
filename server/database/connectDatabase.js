@@ -5,7 +5,7 @@ mongoose.set("strictQuery", false);
 
 async function connectDatabase() {
   try {
-    // console.log(config);
+    console.log(config);
     const result = await mongoose.connect(config.DB_CONNECTION_URL);
     return result;
   } catch (e) {

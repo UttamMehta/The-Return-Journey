@@ -4,6 +4,7 @@ const config = {
   TWILIO_ACCOUNT_SID:process.env. TWILIO_ACCOUNT_SID,
   TWILIO_AUTH_TOKEN:process.env.TWILIO_AUTH_TOKEN,
   PHONE_NO:process.env.PHONE_NO,
+  VERIFY_SID:process.env.VERIFY_SID,
 };
 
 module.exports = config;

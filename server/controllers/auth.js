@@ -3,9 +3,9 @@ const jwt = require("jsonwebtoken");
 const config = require("../config/config");
 const axios = require("axios");
 const brcypt = require("bcryptjs");
-const accountSid = "ACfb18525c5c98a8ea54f8da57b170b4a0";
-const authToken = "357b2fdc35c971241b64a7609bb9d944";
-const verifySid = "VA2898d7098064df8634fe5294e3b8164c";
+const accountSid = config.TWILIO_ACCOUNT_SID;
+const authToken =config.TWILIO_AUTH_TOKEN;
+const verifySid = config.VERIFY_SID;
 const client = require("twilio")(accountSid, authToken);
 
 function generateToken(user) {
@@ -33,8 +33,7 @@ async function getAllUser(req, res) {
 
 async function register(req, res) {
   try {
-    const { phoneno,name,email,password } = req.body;
-  
+    let { phoneno,name,email,password } = req.body;
 
     if (!phoneno||!name||!email||!password) {
       return res.status(400).send({
@@ -60,18 +59,19 @@ async function register(req, res) {
     }
 
     password = brcypt.hashSync(password);
-
-   let userdata = await User.create({
-      name,
-      email,
-      password,
-      phoneno,
-    });
-
+    console.log(phoneno,email,password,name);
+    let userpost = await User.create({
+    name,
+    email,
+    password,
+    phoneno,
+});
+ 
     return res.send({
       message: "Registration successful",
     });
   } catch (err) {
+    console.log("err in 80");
     return res.status(500).send({
       error: "Something went wrong",
     });
@@ -128,22 +128,23 @@ async function sendRandomOTP(req,res) {
    
      let {phoneno}=req.body;
      phoneno="+91"+phoneno;
-    console.log(phoneno);
+    // console.log(phoneno);
+    // console.log(authToken,accountSid ,verifySid)
     
     client.verify
     .v2.services(verifySid)
     .verifications.create({ to: phoneno, channel: 'sms' })
     .then((verification) => {
       console.log(verification.sid);
-      // return res.send({
-      //   message: "Otp send successful",
-      // });
+      return res.send({message:"Otp send successful"});
       // we can also store the OTP in your database or session for verification later
     })
     .catch((error) => {
-      console.log('Error sending OTP:143', error);
+      console.log('Error sending OTP:142', error);
+      return res.status(401).send({error:"Error occured"});
+ 
     });
-  return res.send({message:"Otp send successful"});
+  
   } catch (error) {
     console.log("Error in 146 on auth ");
     return res.status(400).send({error:"Not able to send otp try later"});
