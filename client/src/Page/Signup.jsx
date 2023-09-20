@@ -8,7 +8,6 @@ const initialState = {
   email:"",
   password:"",
   phoneno:"",
-  ipaddress:"",
   otp:"",
   showotp:false,
 };
@@ -21,12 +20,11 @@ function Signup() {
   };
 
   const handleSubmit = async(e) => {
-
     if(!formData.otp){
-  let res=await axios.post("http://localhost:3035/users/generateOtp", formData).
-  then((res)=>{console.log(res.message);
+  let res=await axios.post("http://localhost:3035/users/otp", formData).
+  then((res)=>{console.log(res.message||res.error);
     setFormData((prev)=>({...prev,showotp:true}));
-    alert("sucessfully signup");
+    alert(res.message||res.error);
   return res.message;
   })
     .catch((err) =>{console.log(err)
@@ -38,7 +36,8 @@ function Signup() {
 
   else{
     let res=await axios.post("http://localhost:3035/users/register", formData).
-    then((res)=>{console.log(res.message);
+    then((res)=>{console.log(res.message||res.error);
+      alert(res.message||res.error);
     return res.message;
     })
       .catch((err) =>{console.log(err)
@@ -53,8 +52,7 @@ function Signup() {
       <input placeholder="Enter Email" onChange={handleChange} name="email" type="email"/><br />
       <input placeholder="Enter Password" onChange={handleChange} name="password" type="password" /><br />
       <input placeholder="Enter Phone No" onChange={handleChange} name="phoneno" /><br />
-      <input placeholder="Enter Ipaddress" onChange={handleChange} name="ipaddress" /><br />
-      <>{formData.showotp?<input placeholder="Enter Otp" onChange={handleChange} name="otp" />:""}<br /></>
+      <>{formData.showotp?<input placeholder="Enter Otp" onChange={handleChange} name="otp" type="text" />:""}<br /></>
       <button variant="contained" onClick={handleSubmit}>
        {/* {formData.showotp ? {formData.otp.length===6?`Register`:`Resend Otp`}:"Generate Otp"} */}
        {formData.showotp?<>{formData.otp.length===6?"Register":"Resend Otp"}</>:"Generate Otp"}
