@@ -17,17 +17,20 @@ function Login() {
   };
 
   const handleSubmit = (e) => {
-    axios.post("http://localhost:3035/users/login", formData).then((res) => localStorage.setItem('token', JSON.stringify(res.data.token))).catch((err) => console.log(err));
+    axios.post("http://localhost:3035/users/login", formData).then((res) => 
+  {console.log(res.data)
+    alert(res.data.message);
+  }).catch((err) => console.log(err));
   };
 
   return (
-    <div width="30%" margin="auto">
+    <div>
       <input placeholder="Enter Email" onChange={handleChange} name="email" />
       <input
         placeholder="Enter Password"
         onChange={handleChange}
         name="password"
-      />
+      /><br />
       <button variant="contained" onClick={handleSubmit}>
         Login
       </button>

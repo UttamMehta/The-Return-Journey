@@ -22,13 +22,14 @@ function Signup() {
   const handleSubmit = async(e) => {
     if(!formData.otp){
   let res=await axios.post("http://localhost:3035/users/otp", formData).
-  then((res)=>{console.log(res.message||res.error);
+  then((res)=>{console.log(res);
+    if(res.data.message)
     setFormData((prev)=>({...prev,showotp:true}));
-    alert(res.message||res.error);
-  return res.message;
+    alert(res.data.message||res.data.error);
   })
     .catch((err) =>{console.log(err)
-      alert("error occured");
+      setFormData(prev=>({...prev,showotp:false,otp:""}))
+      alert("error occured 32");
     return err;}
     );
 
@@ -36,12 +37,15 @@ function Signup() {
 
   else{
     let res=await axios.post("http://localhost:3035/users/register", formData).
-    then((res)=>{console.log(res.message||res.error);
-      alert(res.message||res.error);
+    then((res)=>{console.log(res.data.message||res.data.error);
+      setFormData((prev)=>({...prev,showotp:false,otp:""}));
+      alert(res.data.message||res.data.error);
     return res.message;
     })
-      .catch((err) =>{console.log(err)
-      return err;}
+      .catch((err) =>{console.log(err.response.data.message||err.response.data.error)
+        alert(err.response.data.message||err.response.data.error);
+        setFormData(prev=>({...prev,showotp:false,otp:""}))
+        return err;}
       );
     }
 }
@@ -52,7 +56,7 @@ function Signup() {
       <input placeholder="Enter Email" onChange={handleChange} name="email" type="email"/><br />
       <input placeholder="Enter Password" onChange={handleChange} name="password" type="password" /><br />
       <input placeholder="Enter Phone No" onChange={handleChange} name="phoneno" /><br />
-      <>{formData.showotp?<input placeholder="Enter Otp" onChange={handleChange} name="otp" type="text" />:""}<br /></>
+      <>{formData.showotp?<input placeholder="Enter Otp" onChange={handleChange} name="otp" type="text" value={formData.otp}/>:""}<br /></>
       <button variant="contained" onClick={handleSubmit}>
        {/* {formData.showotp ? {formData.otp.length===6?`Register`:`Resend Otp`}:"Generate Otp"} */}
        {formData.showotp?<>{formData.otp.length===6?"Register":"Resend Otp"}</>:"Generate Otp"}
