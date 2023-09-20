@@ -1,16 +1,20 @@
 
-
 async function checkipaddress(req, res, next) {
     try {
-        const clientIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-        req.clientIp = clientIp; // Attach the IP address to the request object
+        const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+        const ipDetails = await ipinfo(ip);
+    
+        if (ipDetails.ip) {
         next();
-    } catch (error) {
-        console.log("Error in 9th line checkipaddress");
-
-        return res.status(401).send({error:"wrong ip address"});
-    }
- 
+        }
+        else{
+        return res.status(400).send({error:'Invalid IP address'});
+        }
+    
+      } catch (error) {
+        console.error('Error validating IP address:', error);
+        res.status(500).send('Internal server error');
+      }
   }
   
   
