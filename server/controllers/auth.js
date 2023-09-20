@@ -4,7 +4,7 @@ const config = require("../config/config");
 const axios = require("axios");
 const brcypt = require("bcryptjs");
 const accountSid = "ACfb18525c5c98a8ea54f8da57b170b4a0";
-const authToken = "234352412ad88b6ee412d9c06fd3fb69";
+const authToken = "357b2fdc35c971241b64a7609bb9d944";
 const verifySid = "VA2898d7098064df8634fe5294e3b8164c";
 const client = require("twilio")(accountSid, authToken);
 
@@ -33,13 +33,15 @@ async function getAllUser(req, res) {
 
 async function register(req, res) {
   try {
-    let { phoneno,ipaddress,name,email,password } = req.body;
+    const { phoneno,name,email,password } = req.body;
+  
 
-    if (!phoneno || !ipaddress||!name||!email||!password) {
+    if (!phoneno||!name||!email||!password) {
       return res.status(400).send({
         error: "Incomplete data",
       });
     }
+    console.log(phoneno);
 
     let userphone = await User.findOne({phoneno});
     if(userphone)
@@ -48,10 +50,10 @@ async function register(req, res) {
         error: "User with phone no already exists",
       });
     }
-
+    
     let useremail=await User.findOne({email});
 
-    if (user) {
+    if (useremail) {
       return res.status(400).send({
         error: "User with email already exists",
       });
@@ -59,12 +61,11 @@ async function register(req, res) {
 
     password = brcypt.hashSync(password);
 
-    user = await User.create({
+   let userdata = await User.create({
       name,
       email,
       password,
       phoneno,
-      ipaddress,
     });
 
     return res.send({
@@ -124,25 +125,27 @@ async function login(req, res) {
 async function sendRandomOTP(req,res) {
   
   try {
-    let {phoneno}=req.body;
-    phoneno="+91"+phoneno;
+   
+     let {phoneno}=req.body;
+     phoneno="+91"+phoneno;
+    console.log(phoneno);
     
     client.verify
     .v2.services(verifySid)
-    .verifications.create({ to: phoneno, channel: 'sms', })
+    .verifications.create({ to: phoneno, channel: 'sms' })
     .then((verification) => {
-      console.log(verification);
-      return res.send({
-        message: "Otp send successful",
-      });
+      console.log(verification.sid);
+      // return res.send({
+      //   message: "Otp send successful",
+      // });
       // we can also store the OTP in your database or session for verification later
     })
     .catch((error) => {
-      console.log('Error sending OTP:', error);
+      console.log('Error sending OTP:143', error);
     });
-    
+  return res.send({message:"Otp send successful"});
   } catch (error) {
-    console.log("Error in 26 on otp");
+    console.log("Error in 146 on auth ");
     return res.status(400).send({error:"Not able to send otp try later"});
   }
   
