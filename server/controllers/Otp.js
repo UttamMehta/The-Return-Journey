@@ -1,126 +1,34 @@
 const { Post } = require("../database/Post");
 const { all } = require("../routes/auth");
-const twilio = require('twilio');
 const config = require("../config/config");
+const accountSid = "ACfb18525c5c98a8ea54f8da57b170b4a0";
+const authToken = "234352412ad88b6ee412d9c06fd3fb69";
+const verifySid = "VA2898d7098064df8634fe5294e3b8164c";
+const client = require("twilio")(accountSid, authToken);
 
-// async function createPost(req, res) {
-//   try {
-//     const user = req.user;
+async function sendRandomOTP(req,res) {
 
-//     const { title, content, device } = req.body;
+  try {
+    let {phoneno}=req.body;
 
-//     const post = await Post.create({
-//       title,
-//       content,
-//       device,
-//       author: {
-//         userId: user._id,
-//         name: user.name,
-//       },
-//     });
-
-//     return res.send({
-//       data: post,
-//     });
-//   } catch (err) {
-//     return res.status(500).send({
-//       error: "Something went wrong",
-//     });
-//   }
-// }
-
-// async function getBlogs(req, res) {
-//   try {
-//     let { device1, device2 } = req.query;
-
-//     let blogs;
-//     if (device1 && device2) {
-//       blogs = await Post.find({ device: { $in: [device1, device2] } });
-//     } else if (device1) {
-//       blogs = await Post.find({ device: device1 });
-//     } else if (device2) {
-//       blogs = await Post.find({ device: device2 });
-//     } else {
-//       blogs = await Post.find();
-//     }
-
-//     return res.send({
-//       data: {
-//         blogs,
-//       },
-//     });
-//   } catch (err) {
-//     console.log(err);
-//     return res.status(500).send({
-//       error: "Something went wrong",
-//     });
-//   }
-// }
-
-// async function getBlogById(req, res) {
-//   try {
-//     const { id } = req.params;
-
-//     let blog = await Post.findByIdAndUpdate({ _id: id }, req.body);
-
-//     if (blog) {
-//       return res.send({
-//         data: blog,
-//       });
-//     } else {
-//       return res.status(404).send({
-//         error: "Blog does not exist",
-//       });
-//     }
-//   } catch (err) {
-//     console.log(err);
-//   }
-// }
-
-// async function deleteByBlogID(req, res) {
-//   try {
-//     const { id } = req.params;
-
-//     let blog = await Post.findByIdAndDelete(id);
-
-//     if (blog) {
-//       return res.send({
-//         data: blog,
-//       });
-//     } else {
-//       return res.status(404).send({
-//         error: "Blog does not exist",
-//       });
-//     }
-//   } catch (err) {
-//     console.log(err);
-//   }
-// }
-
-
-
-// Initialize Twilio client
-const client = twilio("ACfb18525c5c98a8ea54f8da57b170b4a0","17a80806ccddd2363bb96bef3daf08c0");
-
-// Function to send OTP via SMS
-function sendOTP(phoneNumber, otp) {
-  return client.messages.create({
-    to: phoneNumber,
-    from:6370457871,
-    body: `Your OTP: ${otp}`,
-  });
+    client.verify
+    .v2.services(verifySid)
+    .verifications.create({ to: phoneno, channel: 'sms', })
+    .then((verification) => {
+      console.log(verification);
+      // we can also store the OTP in your database or session for verification later
+    })
+    .catch((error) => {
+      console.log('Error sending OTP:', error);
+    });
+    
+  } catch (error) {
+    console.log("Error in 26 on otp");
+    return res.status(400).send({error:"Not able to send otp try later"});
+  }
+  
 }
 
-// Example usage
-const userPhoneNumber = '8338853833'; // Replace with the user's phone number
-const otp = '123456'; // Replace with a randomly generated OTP
-sendOTP(userPhoneNumber, otp)
-  .then((message) => {
-    console.log('OTP sent successfully:', message);
-  })
-  .catch((error) => {
-    console.error('Error sending OTP:', error);
-  });
 
 
 

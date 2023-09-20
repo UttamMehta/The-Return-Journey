@@ -26,19 +26,26 @@ async function getAllUser(req, res) {
   }
 }
 
+
 async function register(req, res) {
   try {
-    let { name, email, password } = req.body;
+    let { phoneno,ipaddress,name,email,password } = req.body;
 
-    if (!name || !email || !password) {
+    if (!phoneno || !ipaddress||!name||!email||!password) {
       return res.status(400).send({
         error: "Incomplete data",
       });
     }
 
-    let user = await User.findOne({
-      email,
-    });
+    let userphone = await User.findOne({phoneno});
+    if(userphone)
+    {
+      return res.status(400).send({
+        error: "User with phone no already exists",
+      });
+    }
+
+    let useremail=await User.findOne({email});
 
     if (user) {
       return res.status(400).send({
@@ -51,8 +58,9 @@ async function register(req, res) {
     user = await User.create({
       name,
       email,
-      signinMethod: "email-password",
       password,
+      phoneno,
+      ipaddress,
     });
 
     return res.send({
@@ -87,7 +95,7 @@ async function login(req, res) {
 
     // Create JWT token
     const token = generateToken(user);
-    const { _id, name, image } = user;
+    const { _id, name, phoneno } = user;
 
     return res.send({
       message: "Login successful",
@@ -96,8 +104,7 @@ async function login(req, res) {
         user: {
           _id,
           name,
-          email,
-          image,
+          phoneno,
         },
       },
     });
@@ -109,98 +116,12 @@ async function login(req, res) {
   }
 }
 
-async function signinWithGitub(req, res) {
-  try {
-    const code = req.params.code;
 
-    // exchange the code with access token
-    const url = `https://github.com/login/oauth/access_token`;
 
-    let response = await axios.post(url, null, {
-      params: {
-        client_id: config.GITHUB_OAUTH_CLIENT_ID,
-        client_secret: config.GITHUB_OAUTH_CLIENT_SECRET,
-        code: code,
-      },
-      headers: {
-        Accept: "application/json",
-      },
-    });
 
-    let accessToken = response.data.access_token;
-    if (!accessToken) {
-      console.log(response.data);
-      throw new Error("Something went wrong");
-    }
-
-    let url2 = "https://api.github.com/user";
-
-    response = await axios.get(url2, {
-      headers: {
-        authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    let user = response.data;
-
-    let existingUser = await User.findOne({
-      signinMethod: "github-oauth",
-      githubUsername: user.login,
-    });
-
-    if (!existingUser) {
-      // First time user is signing in with github
-      existingUser = await User.create({
-        name: user.name,
-        email: user.email,
-        image: user.avatar_url,
-        signinMethod: "github-oauth",
-        githubUsername: user.login,
-      });
-    }
-
-    // Create JWT token
-    const token = generateToken(existingUser);
-    const { _id, name, image, email } = existingUser;
-
-    return res.send({
-      message: "Login with github successful",
-      data: {
-        token,
-        user: {
-          _id,
-          name,
-          email,
-          image,
-        },
-      },
-    });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).send({
-      error: "Something went wrong",
-    });
-  }
-}
-
-async function getLoggedInUser(req, res) {
-  try {
-    const user = req.user;
-
-    return res.send({
-      data: user,
-    });
-  } catch (err) {
-    return res.status(500).send({
-      error: "Something went wrong",
-    });
-  }
-}
 
 module.exports = {
   register,
   login,
-  signinWithGitub,
-  getLoggedInUser,
   getAllUser,
 };
