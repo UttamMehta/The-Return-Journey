@@ -128,8 +128,7 @@ async function sendRandomOTP(req,res) {
    
      let {phoneno}=req.body;
      phoneno="+91"+phoneno;
-    // console.log(phoneno);
-    // console.log(authToken,accountSid ,verifySid)
+
     
     client.verify
     .v2.services(verifySid)
